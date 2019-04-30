@@ -10,6 +10,17 @@ import UIKit
 
 class Canvas: UIView {
     
+    fileprivate var strokeColor = UIColor.black
+    fileprivate var strokeWidth = 1.0
+    
+    func setStrokeWidth(width: Float) {
+        self.strokeWidth = Double(CGFloat(width))
+    }
+    
+    func setStrokeColor(color: UIColor) {
+        self.strokeColor = color
+    }
+    
     func undo() {
         _ = lines.popLast()
         setNeedsDisplay()
@@ -27,8 +38,8 @@ class Canvas: UIView {
         
         guard let context = UIGraphicsGetCurrentContext() else { return }
         
-        context.setStrokeColor(UIColor.red.cgColor)
-        context.setLineWidth(10)
+        context.setStrokeColor(strokeColor.cgColor)
+        context.setLineWidth(CGFloat(strokeWidth))
         context.setLineCap(.butt)
         
         lines.forEach { (line) in
