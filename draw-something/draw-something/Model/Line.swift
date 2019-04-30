@@ -11,5 +11,5 @@ import UIKit
 struct Line {
     let strokeWidth: Float
     let color: UIColor
-    let points: [CGPoint]
+    var points: [CGPoint]
 }

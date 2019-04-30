@@ -31,25 +31,26 @@ class Canvas: UIView {
         setNeedsDisplay()
     }
     
-    var lines = [[CGPoint]]()
+    var lines = [Line]()
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         
         guard let context = UIGraphicsGetCurrentContext() else { return }
         
-        context.setStrokeColor(strokeColor.cgColor)
-        context.setLineWidth(CGFloat(strokeWidth))
-        context.setLineCap(.butt)
-        
         lines.forEach { (line) in
-            for (i, p) in line.enumerated() {
+            context.setStrokeColor(line.color.cgColor)
+            context.setLineWidth(CGFloat(line.strokeWidth))
+            context.setLineCap(.butt)
+            for (i, p) in line.points.enumerated() {
                 if i == 0 {
                     context.move(to: p)
                 } else {
                     context.addLine(to: p)
                 }
             }
+            
+            context.strokePath()
         }
         
         context.strokePath()
@@ -57,14 +58,14 @@ class Canvas: UIView {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        lines.append([CGPoint]())
+        lines.append(Line.init(strokeWidth: Float(strokeWidth), color: strokeColor, points: []))
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let point = touches.first?.location(in: nil) else { return }
 
         guard var lastLine = lines.popLast() else { return }
-        lastLine.append(point)
+        lastLine.points.append(point)
         lines.append(lastLine)
         
         setNeedsDisplay()
